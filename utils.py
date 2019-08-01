@@ -6,21 +6,31 @@ from bisect import bisect_left
 import tensorflow as tf 
 from tflearn.data_utils import to_categorical 
 from tensorflow.contrib import learn 
+import pandas as pd
 
-def read_data(file_dir): 
-    with open(file_dir) as file: 
-        urls = []
-        labels = []
-        for line in file.readlines(): 
-            items = line.split('\t') 
-            label = int(items[0]) 
-            if label == 1: 
-                labels.append(1) 
-            else: 
-                labels.append(0) 
-            url = items[1][:-1]
-            urls.append(url) 
-    return urls, labels 
+
+def read_data(file_path):
+    df = pd.read_csv(file_path)
+    df.label = df.label.map({'bad': 1, 'good': 0})
+    urls = list(df.url.values)
+    labels = list(df.label.values)
+    return urls, labels
+
+
+# def read_data(file_dir):
+#     with open(file_dir) as file:
+#         urls = []
+#         labels = []
+#         for line in file.readlines():
+#             items = line.split('\t')
+#             label = int(items[0])
+#             if label == 1:
+#                 labels.append(1)
+#             else:
+#                 labels.append(0)
+#             url = items[1][:-1]
+#             urls.append(url)
+#     return urls, labels
 
 def split_url(line, part):
     if line.startswith("http://"):
